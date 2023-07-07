@@ -1,34 +1,34 @@
 ---
-title: 'You Might Not Need an Effect'
+title: 'Du brauchst vielleicht keinen Effekt'
 ---
 
 <Intro>
 
-Effects are an escape hatch from the React paradigm. They let you "step outside" of React and synchronize your components with some external system like a non-React widget, network, or the browser DOM. If there is no external system involved (for example, if you want to update a component's state when some props or state change), you shouldn't need an Effect. Removing unnecessary Effects will make your code easier to follow, faster to run, and less error-prone.
+Effekte sind eine Ausstiegsmöglichkeit aus dem React-Paradigma. Sie ermöglichen es dir, Komponenten mit externen Systemen, wie dem Netzwerk, dem Browser-DOM oder einem React-unabhängigen Widget zu synchronisieren. Wenn du jedoch lediglich den Zustand einer Komponente aktualisieren möchtest, sobald sich Props oder States ändern, ohne dass ein externes System involviert ist, brauchst du keinen Effekt. Durch das Entfernen unnötiger Effekte wird dein Code übersichtlicher, schneller und weniger anfällig für Fehler.
 
 </Intro>
 
 <YouWillLearn>
 
-* Why and how to remove unnecessary Effects from your components
-* How to cache expensive computations without Effects
-* How to reset and adjust component state without Effects
-* How to share logic between event handlers
-* Which logic should be moved to event handlers
-* How to notify parent components about changes
+* Warum und wie man unnötige Effekte aus den Komponenten entfernt
+* Wie man teure Berechnungen ohne Effekte zwischenspeichert
+* Wie man den State einer Komponente ohne Effekte zurücksetzt und anpasst
+* Wie man Logik zwischen Event-Handlern teilt
+* Welche Logik in Event-Handlern platziert werden sollte
+* Wie man Elternkomponenten über Änderungen benachrichtigt
 
 </YouWillLearn>
 
-## How to remove unnecessary Effects {/*how-to-remove-unnecessary-effects*/}
+## Wie man unnötige Effekte entfernt {/*how-to-remove-unnecessary-effects*/}
 
-There are two common cases in which you don't need Effects:
+Es gibt zwei häufige Fälle, in denen du keine Effekte brauchst:
 
-* **You don't need Effects to transform data for rendering.** For example, let's say you want to filter a list before displaying it. You might feel tempted to write an Effect that updates a state variable when the list changes. However, this is inefficient. When you update the state, React will first call your component functions to calculate what should be on the screen. Then React will ["commit"](/learn/render-and-commit) these changes to the DOM, updating the screen. Then React will run your Effects. If your Effect *also* immediately updates the state, this restarts the whole process from scratch! To avoid the unnecessary render passes, transform all the data at the top level of your components. That code will automatically re-run whenever your props or state change.
-* **You don't need Effects to handle user events.** For example, let's say you want to send an `/api/buy` POST request and show a notification when the user buys a product. In the Buy button click event handler, you know exactly what happened. By the time an Effect runs, you don't know *what* the user did (for example, which button was clicked). This is why you'll usually handle user events in the corresponding event handlers.
+* **Du brauchst keine Effekte, um Daten für die Darstellung zu transformieren.** Angenommen, du möchtest eine Liste filtern, bevor du sie darstellst. Es könnte verlockend sein, einen Effekt zu schreiben, der den State aktualisiert, wenn sich die Liste ändert. Das ist jedoch ineffizient. Wenn du den State aktualisierst, ruft React zuerst deine Komponentenfunktionen auf, um zu berechnen, was auf dem Bildschirm angezeigt werden soll. Anschließend übergibt (["committet"](/learn/render-and-commit)) React diese Änderungen an den DOM und aktualisiert somit die Ansicht. Danach werden deine Effekte ausgeführt. Wenn dein Effekt den State *ebenfalls* sofort aktualisiert, startet der gesamte Prozess von vorne! Um unnötige Rendervorgänge zu vermeiden, transformiere alle Daten auf der obersten Ebene deiner Komponenten. Dieser Code wird automatisch neu ausgeführt, wenn sich deine Props oder der State ändern.
+* **Du brauchst keine Effekte, um Benutzerereignisse zu verarbeiten.** Angenommen, du möchtest eine POST-Anfrage an `/api/buy` senden und eine Benachrichtigung anzeigen, wenn der Benutzer ein Produkt kauft. Im Event-Handler des Kaufbuttons weißt du genau, was passiert ist. Zum Zeitpunkt der Ausführung eines Effekts weißt du nicht, *was* der Benutzer getan hat (zum Beispiel, welcher Button geklickt wurde). Aus diesem Grund verarbeitet man Benutzerereignisse in der Regel in den entsprechenden Event-Handlern.
 
-You *do* need Effects to [synchronize](/learn/synchronizing-with-effects#what-are-effects-and-how-are-they-different-from-events) with external systems. For example, you can write an Effect that keeps a jQuery widget synchronized with the React state. You can also fetch data with Effects: for example, you can synchronize the search results with the current search query. Keep in mind that modern [frameworks](/learn/start-a-new-react-project#production-grade-react-frameworks) provide more efficient built-in data fetching mechanisms than writing Effects directly in your components.
+Du brauchst *auf jeden Fall* Effekte, um Komponente mit externen Systemen zu [synchronisieren](/learn/synchronizing-with-effects#what-are-effects-and-how-are-they-different-from-events). Du kannst zum Beispiel einen Effekt schreiben, der ein jQuery-Widget mit dem React-State synchronisiert. Du kannst auch Daten mit Effekten abrufen, beispielsweise die Suchergebnisse mit der aktuellen Suchanfrage synchronisieren. Beachte jedoch, dass moderne [Frameworks](/learn/start-a-new-react-project#production-grade-react-frameworks) effizientere integrierte Mechanismen zur Datenabfrage bieten als das direkte Schreiben von Effekten in deinen Komponenten.
 
-To help you gain the right intuition, let's look at some common concrete examples!
+Damit du das richtige Bauchgefühl dafür bekommst, lass uns einen Blick auf ein paar konkrete Beispiele werfen!
 
 ### Updating state based on props or state {/*updating-state-based-on-props-or-state*/}
 
