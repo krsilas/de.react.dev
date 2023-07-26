@@ -30,16 +30,16 @@ Du brauchst *auf jeden Fall* Effekte, um Komponente mit externen Systemen zu [sy
 
 Damit du das richtige Bauchgefühl dafür bekommst, lass uns einen Blick auf ein paar konkrete Beispiele werfen!
 
-### Updating state based on props or state {/*updating-state-based-on-props-or-state*/}
+### Aktualisierung des States basierend auf Props oder State {/*updating-state-based-on-props-or-state*/}
 
-Suppose you have a component with two state variables: `firstName` and `lastName`. You want to calculate a `fullName` from them by concatenating them. Moreover, you'd like `fullName` to update whenever `firstName` or `lastName` change. Your first instinct might be to add a `fullName` state variable and update it in an Effect:
+Angenommen, du hast eine Komponente mit zwei States: `firstName` und `lastName`. Du möchtest ein `fullName` berechnen, indem du sie miteinander verbindest. Außerdem möchtest du, dass sich `fullName` automatisch aktualisiert, sobald sich `firstName` oder `lastName` ändern. Dein erster Gedanke könnte sein, eine State `fullName` hinzuzufügen und diese in einem Effekt zu aktualisieren:
 
 ```js {5-9}
 function Form() {
   const [firstName, setFirstName] = useState('Taylor');
   const [lastName, setLastName] = useState('Swift');
 
-  // 🔴 Avoid: redundant state and unnecessary Effect
+  // 🔴 Vermeide überflüssige States und unnötige Effekte
   const [fullName, setFullName] = useState('');
   useEffect(() => {
     setFullName(firstName + ' ' + lastName);
@@ -48,19 +48,19 @@ function Form() {
 }
 ```
 
-This is more complicated than necessary. It is inefficient too: it does an entire render pass with a stale value for `fullName`, then immediately re-renders with the updated value. Remove the state variable and the Effect:
+Das ist komplizierter als es sein müsste. Und es ist auch ineffizient: Es führt einen kompletten Render-Durchlauf mit einem veralteten Wert für `fullName` durch und rendert dann sofort erneut mit dem aktualisierten Wert. Stattdessen kannst du den State und den Effekt einfach weglassen:
 
 ```js {4-5}
 function Form() {
   const [firstName, setFirstName] = useState('Taylor');
   const [lastName, setLastName] = useState('Swift');
-  // ✅ Good: calculated during rendering
+  // ✅ Verbesserung: wird während dem Rendern berechnet
   const fullName = firstName + ' ' + lastName;
   // ...
 }
 ```
 
-**When something can be calculated from the existing props or state, [don't put it in state.](/learn/choosing-the-state-structure#avoid-redundant-state) Instead, calculate it during rendering.** This makes your code faster (you avoid the extra "cascading" updates), simpler (you remove some code), and less error-prone (you avoid bugs caused by different state variables getting out of sync with each other). If this approach feels new to you, [Thinking in React](/learn/thinking-in-react#step-3-find-the-minimal-but-complete-representation-of-ui-state) explains what should go into state.
+**Wenn etwas auf Basis der bestehenden Props oder des State berechnet werden kann, [speichere es nicht in einem State.](/learn/choosing-the-state-structure#avoid-redundant-state). Berechne es stattdessen während des Renderings.** Dadurch wird dein Code schneller (keine zusätzlichen "kaskadierenden" Aktualisierungen), einfacher (weniger Code) und fehlerrestistent (Vermeidung von Fehlern, die dadurch entstehen, dass verschiedene Zustandsvariablen nicht mehr miteinander synchronisiert sind). Wenn dieser Ansatz für Sie neu ist, erklärt [Thinking in React](/learn/thinking-in-react#step-3-find-the-minimal-but-complete-representation-of-ui-state), was in den State aufgenommen werden sollte.
 
 ### Caching expensive calculations {/*caching-expensive-calculations*/}
 
