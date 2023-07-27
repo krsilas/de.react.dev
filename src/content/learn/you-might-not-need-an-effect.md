@@ -54,7 +54,7 @@ Das ist komplizierter als es sein müsste. Und es ist auch ineffizient: Es führ
 function Form() {
   const [firstName, setFirstName] = useState('Taylor');
   const [lastName, setLastName] = useState('Swift');
-  // ✅ Verbesserung: wird während dem Rendern berechnet
+  // ✅ Verbesserung: wird während des Renderings berechnet
   const fullName = firstName + ' ' + lastName;
   // ...
 }
@@ -807,11 +807,11 @@ In general, whenever you have to resort to writing Effects, keep an eye out for 
 
 <Challenges>
 
-#### Transform data without Effects {/*transform-data-without-effects*/}
+#### Daten ohne Effekte transformieren {/*transform-data-without-effects*/}
 
-The `TodoList` below displays a list of todos. When the "Show only active todos" checkbox is ticked, completed todos are not displayed in the list. Regardless of which todos are visible, the footer displays the count of todos that are not yet completed.
+Die folgende `ToDoList` zeigt eine Liste der Aufgaben an. Wenn die Checkbox "Nur aktive To-dos anzeigen" aktiviert ist, werden abgeschlossene To-dos nicht in der Liste angezeigt. Unabhängig davon, welche Aufgaben sichtbar sind, zeigt der Footer die Anzahl der noch nicht erledigten To-dos an.
 
-Simplify this component by removing all the unnecessary state and Effects.
+Vereinfache die Komponente, indem du alle überflüssigen States und Effekte entfernst.
 
 <Sandpack>
 
@@ -837,7 +837,7 @@ export default function TodoList() {
   useEffect(() => {
     setFooter(
       <footer>
-        {activeTodos.length} todos left
+        {activeTodos.length} offene To-dos
       </footer>
     );
   }, [activeTodos]);
@@ -850,7 +850,7 @@ export default function TodoList() {
           checked={showActive}
           onChange={e => setShowActive(e.target.checked)}
         />
-        Show only active todos
+        Nur aktive To-dos anzeigen
       </label>
       <NewTodo onAdd={newTodo => setTodos([...todos, newTodo])} />
       <ul>
@@ -877,7 +877,7 @@ function NewTodo({ onAdd }) {
     <>
       <input value={text} onChange={e => setText(e.target.value)} />
       <button onClick={handleAddClick}>
-        Add
+        Hinzufügen
       </button>
     </>
   );
@@ -896,9 +896,9 @@ export function createTodo(text, completed = false) {
 }
 
 export const initialTodos = [
-  createTodo('Get apples', true),
-  createTodo('Get oranges', true),
-  createTodo('Get carrots'),
+  createTodo('Äpfel kaufen', true),
+  createTodo('Orangen kaufen', true),
+  createTodo('Karotten kaufen'),
 ];
 ```
 
@@ -911,15 +911,15 @@ input { margin-top: 10px; }
 
 <Hint>
 
-If you can calculate something during rendering, you don't need state or an Effect that updates it.
+Wenn du etwas während des Renderings berechnen kannst, brauchst du keinen State und auch keinen Effekt, der ihn aktualisiert.
 
 </Hint>
 
 <Solution>
 
-There are only two essential pieces of state in this example: the list of `todos` and the `showActive` state variable which represents whether the checkbox is ticked. All of the other state variables are [redundant](/learn/choosing-the-state-structure#avoid-redundant-state) and can be calculated during rendering instead. This includes the `footer` which you can move directly into the surrounding JSX.
+In diesem Beispiel gibt es nur zwei wesentliche States: die Liste der To-dos und den `showActive`-State, der angibt, ob die Checkbox ausgewählt ist. Alle anderen States sind überflüssig und können stattdessen während des Renderings berechnet werden. Dazu gehört auch der `footer`, den du direkt in das JSX verschieben kannst.
 
-Your result should end up looking like this:
+Dein Ergebnis sollte in etwa so aussehen:
 
 <Sandpack>
 
@@ -941,7 +941,7 @@ export default function TodoList() {
           checked={showActive}
           onChange={e => setShowActive(e.target.checked)}
         />
-        Show only active todos
+        Nur aktive To-dos anzeigen
       </label>
       <NewTodo onAdd={newTodo => setTodos([...todos, newTodo])} />
       <ul>
@@ -952,7 +952,7 @@ export default function TodoList() {
         ))}
       </ul>
       <footer>
-        {activeTodos.length} todos left
+        {activeTodos.length} offene To-dos
       </footer>
     </>
   );
@@ -970,7 +970,7 @@ function NewTodo({ onAdd }) {
     <>
       <input value={text} onChange={e => setText(e.target.value)} />
       <button onClick={handleAddClick}>
-        Add
+        Hinzufügen
       </button>
     </>
   );
@@ -989,9 +989,9 @@ export function createTodo(text, completed = false) {
 }
 
 export const initialTodos = [
-  createTodo('Get apples', true),
-  createTodo('Get oranges', true),
-  createTodo('Get carrots'),
+  createTodo('Äpfel kaufen', true),
+  createTodo('Orangen kaufen', true),
+  createTodo('Karotten kaufen'),
 ];
 ```
 
