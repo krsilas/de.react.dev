@@ -809,7 +809,7 @@ In general, whenever you have to resort to writing Effects, keep an eye out for 
 
 #### Daten ohne Effekte transformieren {/*transform-data-without-effects*/}
 
-Die folgende `ToDoList` zeigt eine Liste der Aufgaben an. Wenn die Checkbox "Nur aktive To-dos anzeigen" aktiviert ist, werden abgeschlossene To-dos nicht in der Liste angezeigt. Unabhängig davon, welche Aufgaben sichtbar sind, zeigt der Footer die Anzahl der noch nicht erledigten To-dos an.
+Die folgende `ToDoList` zeigt eine Liste der Aufgaben an. Wenn die Checkbox "Nur aktive ToDos anzeigen" aktiviert ist, werden abgeschlossene ToDos nicht in der Liste angezeigt. Unabhängig davon, welche Aufgaben sichtbar sind, zeigt der Footer die Anzahl der noch nicht erledigten ToDos an.
 
 Vereinfache die Komponente, indem du alle unnötigen States und Effekte entfernst.
 
@@ -837,7 +837,7 @@ export default function TodoList() {
   useEffect(() => {
     setFooter(
       <footer>
-        {activeTodos.length} offene To-dos
+        {activeTodos.length} offene ToDos
       </footer>
     );
   }, [activeTodos]);
@@ -850,7 +850,7 @@ export default function TodoList() {
           checked={showActive}
           onChange={e => setShowActive(e.target.checked)}
         />
-        Nur aktive To-dos anzeigen
+        Nur aktive ToDos anzeigen
       </label>
       <NewTodo onAdd={newTodo => setTodos([...todos, newTodo])} />
       <ul>
@@ -917,7 +917,7 @@ Wenn du etwas während des Renderings berechnen kannst, brauchst du keinen State
 
 <Solution>
 
-In diesem Beispiel gibt es nur zwei wesentliche States: die Liste der To-dos und den `showActive`-State, der angibt, ob die Checkbox ausgewählt ist. Alle anderen States sind überflüssig und können stattdessen während des Renderings berechnet werden. Dazu gehört auch der `footer`, den du direkt in das JSX verschieben kannst.
+In diesem Beispiel gibt es nur zwei wesentliche States: die Liste der ToDos und den `showActive`-State, der angibt, ob die Checkbox ausgewählt ist. Alle anderen States sind überflüssig und können stattdessen während des Renderings berechnet werden. Dazu gehört auch der `footer`, den du direkt in das JSX verschieben kannst.
 
 Dein Ergebnis sollte in etwa so aussehen:
 
@@ -941,7 +941,7 @@ export default function TodoList() {
           checked={showActive}
           onChange={e => setShowActive(e.target.checked)}
         />
-        Nur aktive To-dos anzeigen
+        Nur aktive ToDos anzeigen
       </label>
       <NewTodo onAdd={newTodo => setTodos([...todos, newTodo])} />
       <ul>
@@ -952,7 +952,7 @@ export default function TodoList() {
         ))}
       </ul>
       <footer>
-        {activeTodos.length} offene To-dos
+        {activeTodos.length} offene ToDos
       </footer>
     </>
   );
@@ -1006,13 +1006,13 @@ input { margin-top: 10px; }
 
 #### Berechnungen ohne Effekte zwischenspeichern {/*cache-a-calculation-without-effects*/}
 
-In diesem Beispiel wurde das Filtern der ToDos in eine separate Funktion namens `getVisibleTodos()` ausgelagert. Diese Funktion enthält einen Aufruf von `console.log()`, der dir hilft, zu erkennen, wann sie aufgerufen wird. Wenn du die Option "Nur aktive To-dos anzeigen" auswählst, wirst du feststellen, dass `getVisibleTodos()` erneut aufgerufen wird. Das ist zu erwarten, weil sich die sichtbaren To-dos ändern, wenn du zwischen den Anzeigemöglichkeiten wechselst.
+In diesem Beispiel wurde das Filtern der ToDos in eine separate Funktion namens `getVisibleTodos()` ausgelagert. Diese Funktion enthält einen Aufruf von `console.log()`, der dir hilft, zu erkennen, wann sie aufgerufen wird. Wenn du die Option "Nur aktive ToDos anzeigen" auswählst, wirst du feststellen, dass `getVisibleTodos()` erneut aufgerufen wird. Das ist zu erwarten, weil sich die sichtbaren ToDos ändern, wenn du zwischen den Anzeigemöglichkeiten wechselst.
 
 Deine Aufgabe ist es, den Effekt zu entfernen, der die Liste `visibleTodos` in der Komponente `TodoList` neu berechnet. Du musst jedoch sichergehen, dass `getVisibleTodos()` *nicht* erneut ausgeführt wird (und daher keine Logs ausgibt), wenn du das Eingabefeld ausfüllst.
 
 <Hint>
 
-Eine Lösung wäre, einen `useMemo`-Aufruf hinzuzufügen, um die sichtbaren To-dos zwischenzuspeichern. Es gibt auch eine andere, weniger offensichtliche Lösung.
+Eine Lösung wäre, einen `useMemo`-Aufruf hinzuzufügen, um die sichtbaren ToDos zwischenzuspeichern. Es gibt auch eine andere, weniger offensichtliche Lösung.
 
 </Hint>
 
@@ -1045,7 +1045,7 @@ export default function TodoList() {
           checked={showActive}
           onChange={e => setShowActive(e.target.checked)}
         />
-        Nur aktive To-dos anzeigen
+        Nur aktive ToDos anzeigen
       </label>
       <input value={text} onChange={e => setText(e.target.value)} />
       <button onClick={handleAddClick}>
@@ -1128,7 +1128,7 @@ export default function TodoList() {
           checked={showActive}
           onChange={e => setShowActive(e.target.checked)}
         />
-        Nur aktive To-dos anzeigen
+        Nur aktive ToDos anzeigen
       </label>
       <input value={text} onChange={e => setText(e.target.value)} />
       <button onClick={handleAddClick}>
