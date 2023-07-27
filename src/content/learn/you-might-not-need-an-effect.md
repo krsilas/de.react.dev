@@ -4,7 +4,7 @@ title: 'Du brauchst vielleicht keinen Effekt'
 
 <Intro>
 
-Effekte sind eine Ausstiegsmöglichkeit aus dem React-Paradigma. Sie ermöglichen es dir, Komponenten mit externen Systemen, wie dem Netzwerk, dem Browser-DOM oder einem React-unabhängigen Widget zu synchronisieren. Wenn du jedoch lediglich den Zustand einer Komponente aktualisieren möchtest, sobald sich Props oder States ändern, ohne dass ein externes System involviert ist, brauchst du keinen Effekt. Durch das Entfernen unnötiger Effekte wird dein Code übersichtlicher, schneller und weniger anfällig für Fehler.
+Effekte sind eine Ausstiegsmöglichkeit aus dem React-Paradigma. Sie ermöglichen es dir, Komponenten mit externen Systemen, wie dem Netzwerk, dem Browser-DOM oder einem React-unabhängigen Widget zu synchronisieren. Wenn du jedoch lediglich den State einer Komponente aktualisieren möchtest, sobald sich Props oder States ändern, ohne dass ein externes System involviert ist, brauchst du keinen Effekt. Durch das Entfernen unnötiger Effekte wird dein Code übersichtlicher, schneller und weniger anfällig für Fehler.
 
 </Intro>
 
