@@ -149,7 +149,7 @@ const visibleTodos = useMemo(() => {
 console.timeEnd('filter array');
 ```
 
-Mit `useMemo` wird das *erste* Rendern nicht schneller. Es hilft nur, überflüssige Arbeit bei Aktualisierungen zu vermeiden.
+Mit `useMemo` wird das *erste* Rendering nicht schneller. Es hilft nur, überflüssige Arbeit bei Aktualisierungen zu vermeiden.
 
 Bedenken, dass dein Rechner wahrscheinlich schneller ist als der deiner Nutzer. Daher ist es eine gute Idee, die Leistung mit einer künstlichen Verlangsamung zu testen. In Chrome gibt zum Beispiel die Möglichkeit, [die CPU zu drosseln](https://developer.chrome.com/blog/new-in-devtools-61/#throttling).
 
