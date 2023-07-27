@@ -39,7 +39,7 @@ function Form() {
   const [firstName, setFirstName] = useState('Taylor');
   const [lastName, setLastName] = useState('Swift');
 
-  // 🔴 Vermeide überflüssige States und unnötige Effekte
+  // 🔴 Vermeide unnötige States und Effekte
   const [fullName, setFullName] = useState('');
   useEffect(() => {
     setFullName(firstName + ' ' + lastName);
@@ -60,9 +60,9 @@ function Form() {
 }
 ```
 
-**Wenn etwas auf Basis der bestehenden Props oder des State berechnet werden kann, [speichere es nicht in einem State.](/learn/choosing-the-state-structure#avoid-redundant-state) Berechne es stattdessen während des Renderings.** Dadurch wird dein Code schneller (keine zusätzlichen "kaskadierenden" Aktualisierungen), einfacher (weniger Code) und fehlerresistent (Vermeidung von Fehlern, die dadurch entstehen, dass verschiedene Zustandsvariablen nicht mehr miteinander synchronisiert sind). Wenn dieser Ansatz für Sie neu ist, erklärt [Thinking in React](/learn/thinking-in-react#step-3-find-the-minimal-but-complete-representation-of-ui-state), was in den State aufgenommen werden sollte.
+**Wenn etwas auf Basis der bestehenden Props oder des State berechnet werden kann, [speichere es nicht in einem State.](/learn/choosing-the-state-structure#avoid-redundant-state) Berechne es stattdessen während des Renderings.** Dadurch wird dein Code schneller (keine zusätzlichen "kaskadierenden" Aktualisierungen), einfacher (weniger Code) und fehlerresistent (Vermeidung von Fehlern, die dadurch entstehen, dass verschiedene States nicht mehr miteinander synchronisiert sind). Wenn dieser Ansatz neu für dich ist, erklärt [Thinking in React](/learn/thinking-in-react#step-3-find-the-minimal-but-complete-representation-of-ui-state), was in den State aufgenommen werden sollte.
 
-### Caching aufwendiger Berechnungen {/*caching-expensive-calculations*/}
+### Aufwendige Berechnungen zwischenspeichern {/*caching-expensive-calculations*/}
 
 Diese Komponente berechnet `visibleTodos`, indem sie die `todos` nimmt, die sie über die Props erhält und filtert sie, basierend auf der `filter`-Prop. Man könnte sich dazu verleitet fühlen, das Ergebnis in einem State zu speichern und es in einem Effekt zu aktualisieren:
 
@@ -70,7 +70,7 @@ Diese Komponente berechnet `visibleTodos`, indem sie die `todos` nimmt, die sie 
 function TodoList({ todos, filter }) {
   const [newTodo, setNewTodo] = useState('');
 
-  // 🔴 Vermeide überflüssige States und unnötige Effekte.
+  // 🔴 Vermeide unnötige States und Effekte.
   const [visibleTodos, setVisibleTodos] = useState([]);
   useEffect(() => {
     setVisibleTodos(getFilteredTodos(todos, filter));
@@ -94,7 +94,7 @@ function TodoList({ todos, filter }) {
 
 In der Regel ist dieser Code in Ordnung! Aber möglicherweise ist `getFilteredTodos()` langsam oder du hast eine sehr große Anzahl von `Todos`. In diesem Fall sollte `getFilteredTodos()` nicht neu berechnet werden, wenn sich ein unabhänger State, wie `newTodo`, geändert hat.
 
-Du kannst eine aufwändige Berechnung cachen (oder ["memorieren"](https://de.wikipedia.org/wiki/Memoisation)), indem du die [`useMemo`](/reference/react/useMemo) Hook verwendest:
+Du kannst eine aufwändige Berechnung zwischenspeichern (oder ["memorieren"](https://de.wikipedia.org/wiki/Memoisation)), indem du die [`useMemo`](/reference/react/useMemo) Hook verwendest:
 
 ```js {5-8}
 import { useMemo, useState } from 'react';
@@ -811,7 +811,7 @@ In general, whenever you have to resort to writing Effects, keep an eye out for 
 
 Die folgende `ToDoList` zeigt eine Liste der Aufgaben an. Wenn die Checkbox "Nur aktive To-dos anzeigen" aktiviert ist, werden abgeschlossene To-dos nicht in der Liste angezeigt. Unabhängig davon, welche Aufgaben sichtbar sind, zeigt der Footer die Anzahl der noch nicht erledigten To-dos an.
 
-Vereinfache die Komponente, indem du alle überflüssigen States und Effekte entfernst.
+Vereinfache die Komponente, indem du alle unnötigen States und Effekte entfernst.
 
 <Sandpack>
 
@@ -1004,7 +1004,7 @@ input { margin-top: 10px; }
 
 </Solution>
 
-#### Berechnungen ohne Effekte cachen {/*cache-a-calculation-without-effects*/}
+#### Berechnungen ohne Effekte zwischenspeichern {/*cache-a-calculation-without-effects*/}
 
 In diesem Beispiel wurde das Filtern der ToDos in eine separate Funktion namens `getVisibleTodos()` ausgelagert. Diese Funktion enthält einen Aufruf von `console.log()`, der dir hilft, zu erkennen, wann sie aufgerufen wird. Wenn du die Option "Nur aktive To-dos anzeigen" auswählst, wirst du feststellen, dass `getVisibleTodos()` erneut aufgerufen wird. Das ist zu erwarten, weil sich die sichtbaren To-dos ändern, wenn du zwischen den Anzeigemöglichkeiten wechselst.
 
@@ -1012,7 +1012,7 @@ Deine Aufgabe ist es, den Effekt zu entfernen, der die Liste `visibleTodos` in d
 
 <Hint>
 
-Eine Lösung wäre, einen `useMemo`-Aufruf hinzuzufügen, um die sichtbaren To-dos zu cachen. Es gibt auch eine andere, weniger offensichtliche Lösung.
+Eine Lösung wäre, einen `useMemo`-Aufruf hinzuzufügen, um die sichtbaren To-dos zwischenzuspeichern. Es gibt auch eine andere, weniger offensichtliche Lösung.
 
 </Hint>
 
@@ -1098,7 +1098,7 @@ input { margin-top: 10px; }
 
 <Solution>
 
-Entferne den State und den Effekt und verwende stattdessen `useMemo`, um das Ergebnis von `getVisibleTodos` zu cachen:
+Entferne den State und den Effekt und verwende stattdessen `useMemo`, um das Ergebnis von `getVisibleTodos` zwischenzuspeichern:
 
 <Sandpack>
 
