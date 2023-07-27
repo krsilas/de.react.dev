@@ -30,7 +30,7 @@ Du brauchst *auf jeden Fall* Effekte, um Komponente mit externen Systemen zu [sy
 
 Damit du das richtige Bauchgefühl dafür bekommst, lass uns einen Blick auf ein paar konkrete Beispiele werfen!
 
-### Aktualisierung des States basierend auf Props oder State {/*updating-state-based-on-props-or-state*/}
+### Aktualisierung eines States basierend auf Props oder State {/*updating-state-based-on-props-or-state*/}
 
 Angenommen, du hast eine Komponente mit zwei States: `firstName` und `lastName`. Du möchtest ein `fullName` berechnen, indem du sie miteinander verbindest. Außerdem möchtest du, dass sich `fullName` automatisch aktualisiert, sobald sich `firstName` oder `lastName` ändern. Dein erster Gedanke könnte sein, eine State `fullName` hinzuzufügen und diese in einem Effekt zu aktualisieren:
 
@@ -60,17 +60,17 @@ function Form() {
 }
 ```
 
-**Wenn etwas auf Basis der bestehenden Props oder des State berechnet werden kann, [speichere es nicht in einem State.](/learn/choosing-the-state-structure#avoid-redundant-state). Berechne es stattdessen während des Renderings.** Dadurch wird dein Code schneller (keine zusätzlichen "kaskadierenden" Aktualisierungen), einfacher (weniger Code) und fehlerrestistent (Vermeidung von Fehlern, die dadurch entstehen, dass verschiedene Zustandsvariablen nicht mehr miteinander synchronisiert sind). Wenn dieser Ansatz für Sie neu ist, erklärt [Thinking in React](/learn/thinking-in-react#step-3-find-the-minimal-but-complete-representation-of-ui-state), was in den State aufgenommen werden sollte.
+**Wenn etwas auf Basis der bestehenden Props oder des State berechnet werden kann, [speichere es nicht in einem State.](/learn/choosing-the-state-structure#avoid-redundant-state) Berechne es stattdessen während des Renderings.** Dadurch wird dein Code schneller (keine zusätzlichen "kaskadierenden" Aktualisierungen), einfacher (weniger Code) und fehlerresistent (Vermeidung von Fehlern, die dadurch entstehen, dass verschiedene Zustandsvariablen nicht mehr miteinander synchronisiert sind). Wenn dieser Ansatz für Sie neu ist, erklärt [Thinking in React](/learn/thinking-in-react#step-3-find-the-minimal-but-complete-representation-of-ui-state), was in den State aufgenommen werden sollte.
 
-### Caching expensive calculations {/*caching-expensive-calculations*/}
+### Caching aufwendiger Berechnungen {/*caching-expensive-calculations*/}
 
-This component computes `visibleTodos` by taking the `todos` it receives by props and filtering them according to the `filter` prop. You might feel tempted to store the result in state and update it from an Effect:
+Diese Komponente berechnet `visibleTodos`, indem sie die `todos` nimmt, die sie über die Props erhält und filtert sie, basierend auf der `filter`-Prop. Man könnte sich dazu verleitet fühlen, das Ergebnis in einem State zu speichern und es in einem Effekt zu aktualisieren:
 
 ```js {4-8}
 function TodoList({ todos, filter }) {
   const [newTodo, setNewTodo] = useState('');
 
-  // 🔴 Avoid: redundant state and unnecessary Effect
+  // 🔴 Vermeide überflüssige States und unnötige Effekte.
   const [visibleTodos, setVisibleTodos] = useState([]);
   useEffect(() => {
     setVisibleTodos(getFilteredTodos(todos, filter));
@@ -80,20 +80,21 @@ function TodoList({ todos, filter }) {
 }
 ```
 
-Like in the earlier example, this is both unnecessary and inefficient. First, remove the state and the Effect:
+Wie in dem vorherigen Beispiel sind beide überflüssig und ineffizient. Entferne als Erstes den State und den Effekt:
+
 
 ```js {3-4}
 function TodoList({ todos, filter }) {
   const [newTodo, setNewTodo] = useState('');
-  // ✅ This is fine if getFilteredTodos() is not slow.
+  // ✅ Das reicht aus, wenn getFilteredTodos() nicht zu langsam ist
   const visibleTodos = getFilteredTodos(todos, filter);
   // ...
 }
 ```
 
-Usually, this code is fine! But maybe `getFilteredTodos()` is slow or you have a lot of `todos`. In that case you don't want to recalculate `getFilteredTodos()` if some unrelated state variable like `newTodo` has changed.
+In der Regel ist dieser Code in Ordnung! Aber möglicherweise ist `getFilteredTodos()` langsam oder du hast eine sehr große Anzahl von `Todos`. In diesem Fall sollte `getFilteredTodos()` nicht neu berechnet werden, wenn sich ein unabhänger State, wie `newTodo`, geändert hat.
 
-You can cache (or ["memoize"](https://en.wikipedia.org/wiki/Memoization)) an expensive calculation by wrapping it in a [`useMemo`](/reference/react/useMemo) Hook:
+Du kannst eine aufwändige Berechnung cachen (oder ["memorieren"](https://de.wikipedia.org/wiki/Memoisation)), indem du die [`useMemo`](/reference/react/useMemo) Hook verwendest:
 
 ```js {5-8}
 import { useMemo, useState } from 'react';
@@ -101,35 +102,35 @@ import { useMemo, useState } from 'react';
 function TodoList({ todos, filter }) {
   const [newTodo, setNewTodo] = useState('');
   const visibleTodos = useMemo(() => {
-    // ✅ Does not re-run unless todos or filter change
+    // ✅ Wird nicht erneut ausgeführt, solange sich die ToDos oder der Filter nicht ändern
     return getFilteredTodos(todos, filter);
   }, [todos, filter]);
   // ...
 }
 ```
 
-Or, written as a single line:
+Oder in einer Zeile geschrieben:
 
 ```js {5-6}
 import { useMemo, useState } from 'react';
 
 function TodoList({ todos, filter }) {
   const [newTodo, setNewTodo] = useState('');
-  // ✅ Does not re-run getFilteredTodos() unless todos or filter change
+  // ✅ Führt getFilteredTodos() nicht erneut aus, solange sich die Abhängigkeiten nicht ändern
   const visibleTodos = useMemo(() => getFilteredTodos(todos, filter), [todos, filter]);
   // ...
 }
 ```
 
-**This tells React that you don't want the inner function to re-run unless either `todos` or `filter` have changed.** React will remember the return value of `getFilteredTodos()` during the initial render. During the next renders, it will check if `todos` or `filter` are different. If they're the same as last time, `useMemo` will return the last result it has stored. But if they are different, React will call the inner function again (and store its result).
+**Das signalisiert React, dass die innere Funktion nur erneut ausgeführt werden soll, wenn sich entweder `todos` oder `filter` geändert haben.** React merkt sich den Rückgabewert von `getFilteredTodos()` während des initialen Renderings. Bei den nächsten Renderschritten überprüft React, ob sich `todos` oder `filter` geändert haben. Wenn sie sich nicht unterscheiden, gibt `useMemo` das zuvor gespeicherte Ergebnis zurück. Wenn sie jedoch unterschiedlich sind, ruft React die innere Funktion erneut auf (und speichert das Ergebnis).
 
-The function you wrap in [`useMemo`](/reference/react/useMemo) runs during rendering, so this only works for [pure calculations.](/learn/keeping-components-pure)
+Die Funktion, die du in [`useMemo`](/reference/react/useMemo) einsetzt, wird während des Renderings ausgeführt, daher funktioniert das nur für [reine Berechnungen.](/learn/keeping-components-pure)
 
 <DeepDive>
 
-#### How to tell if a calculation is expensive? {/*how-to-tell-if-a-calculation-is-expensive*/}
+#### Woran erkennt man, ob eine Berechnung aufwendig ist? {/*how-to-tell-if-a-calculation-is-expensive*/}
 
-In general, unless you're creating or looping over thousands of objects, it's probably not expensive. If you want to get more confidence, you can add a console log to measure the time spent in a piece of code:
+Wenn du nicht gerade Tausende von Objekten erstellst oder verarbeitest, ist die Berechnung vermutlich nicht aufwendig. Wenn du aber sicherer sein möchtest, kannst du ein Konsolenprotokoll hinzufügen, um zu messen, wie viel Zeit ein Codeabschnitt benötigt:
 
 ```js {1,3}
 console.time('filter array');
@@ -137,21 +138,22 @@ const visibleTodos = getFilteredTodos(todos, filter);
 console.timeEnd('filter array');
 ```
 
-Perform the interaction you're measuring (for example, typing into the input). You will then see logs like `filter array: 0.15ms` in your console. If the overall logged time adds up to a significant amount (say, `1ms` or more), it might make sense to memoize that calculation. As an experiment, you can then wrap the calculation in `useMemo` to verify whether the total logged time has decreased for that interaction or not:
+Führe die Interaktion durch, die du messen möchtest. (Schreibe zum Beispiel etwas in ein Eingabefeld.) Du wirst dann Einträge wie `filter array: 0.15ms` in deiner Konsole sehen. Wenn die insgesamt protokollierte Zeit eine signifikante Dauer erreicht (zum Beispiel 1ms oder mehr), könnte es sinnvoll sein, diese Berechnung zwischenzuspeichern (memorieren). Als Experiment kannst du dann useMemo verwenden, um zu überprüfen, ob sich die gesamte protokollierte Zeit für diese Interaktion verringert hat oder nicht:
 
 ```js
 console.time('filter array');
 const visibleTodos = useMemo(() => {
-  return getFilteredTodos(todos, filter); // Skipped if todos and filter haven't changed
+  return getFilteredTodos(todos, filter); 
+  // Übersprungen, falls sich `todos` und `filter` nicht geändert haben
 }, [todos, filter]);
 console.timeEnd('filter array');
 ```
 
-`useMemo` won't make the *first* render faster. It only helps you skip unnecessary work on updates.
+Mit `useMemo` wird das *erste* Rendern nicht schneller. Es hilft nur, überflüssige Arbeit bei Aktualisierungen zu vermeiden.
 
-Keep in mind that your machine is probably faster than your users' so it's a good idea to test the performance with an artificial slowdown. For example, Chrome offers a [CPU Throttling](https://developer.chrome.com/blog/new-in-devtools-61/#throttling) option for this.
+Bedenken, dass dein Rechner wahrscheinlich schneller ist als der deiner Nutzer. Daher ist es eine gute Idee, die Leistung mit einer künstlichen Verlangsamung zu testen. In Chrome gibt zum Beispiel die Möglichkeit, [die CPU zu drosseln](https://developer.chrome.com/blog/new-in-devtools-61/#throttling).
 
-Also note that measuring performance in development will not give you the most accurate results. (For example, when [Strict Mode](/reference/react/StrictMode) is on, you will see each component render twice rather than once.) To get the most accurate timings, build your app for production and test it on a device like your users have.
+Berücksichtige auch, dass die Messung der Leistung während der Entwicklung nicht die genauesten Ergebnisse liefert. (Wenn zum Beispiel der [Strict Mode](/reference/react/StrictMode) aktiviert ist, wird jede Komponente zweimal statt einmal gerendert). Um die genauesten Zeitangaben zu erhalten, bauen deine Anwendung für den Einsatz in der Produktionsumgebung und teste sie auf einem Gerät, das deine Benutzer haben.
 
 </DeepDive>
 
