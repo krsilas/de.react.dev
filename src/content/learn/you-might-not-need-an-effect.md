@@ -1004,15 +1004,15 @@ input { margin-top: 10px; }
 
 </Solution>
 
-#### Cache a calculation without Effects {/*cache-a-calculation-without-effects*/}
+#### Berechnungen ohne Effekte cachen {/*cache-a-calculation-without-effects*/}
 
-In this example, filtering the todos was extracted into a separate function called `getVisibleTodos()`. This function contains a `console.log()` call inside of it which helps you notice when it's being called. Toggle "Show only active todos" and notice that it causes `getVisibleTodos()` to re-run. This is expected because visible todos change when you toggle which ones to display.
+In diesem Beispiel wurde das Filtern der ToDos in eine separate Funktion namens `getVisibleTodos()` ausgelagert. Diese Funktion enthält einen Aufruf von `console.log()`, der dir hilft, zu erkennen, wann sie aufgerufen wird. Wenn du die Option "Nur aktive To-dos anzeigen" auswählst, wirst du feststellen, dass `getVisibleTodos()` erneut aufgerufen wird. Das ist zu erwarten, weil sich die sichtbaren To-dos ändern, wenn du zwischen den Anzeigemöglichkeiten wechselst.
 
-Your task is to remove the Effect that recomputes the `visibleTodos` list in the `TodoList` component. However, you need to make sure that `getVisibleTodos()` does *not* re-run (and so does not print any logs) when you type into the input.
+Deine Aufgabe ist es, den Effekt zu entfernen, der die Liste `visibleTodos` in der Komponente `TodoList` neu berechnet. Du musst jedoch sichergehen, dass `getVisibleTodos()` *nicht* erneut ausgeführt wird (und daher keine Logs ausgibt), wenn du das Eingabefeld ausfüllst.
 
 <Hint>
 
-One solution is to add a `useMemo` call to cache the visible todos. There is also another, less obvious solution.
+Eine Lösung wäre, einen `useMemo`-Aufruf hinzuzufügen, um die sichtbaren To-dos zu cachen. Es gibt auch eine andere, weniger offensichtliche Lösung.
 
 </Hint>
 
@@ -1045,11 +1045,11 @@ export default function TodoList() {
           checked={showActive}
           onChange={e => setShowActive(e.target.checked)}
         />
-        Show only active todos
+        Nur aktive To-dos anzeigen
       </label>
       <input value={text} onChange={e => setText(e.target.value)} />
       <button onClick={handleAddClick}>
-        Add
+        Hinzufügen
       </button>
       <ul>
         {visibleTodos.map(todo => (
@@ -1083,9 +1083,9 @@ export function createTodo(text, completed = false) {
 }
 
 export const initialTodos = [
-  createTodo('Get apples', true),
-  createTodo('Get oranges', true),
-  createTodo('Get carrots'),
+  createTodo('Äpfel kaufen', true),
+  createTodo('Orangen kaufen', true),
+  createTodo('Karotten kaufen'),
 ];
 ```
 
@@ -1098,7 +1098,7 @@ input { margin-top: 10px; }
 
 <Solution>
 
-Remove the state variable and the Effect, and instead add a `useMemo` call to cache the result of calling `getVisibleTodos()`:
+Entferne den State und den Effekt und verwende stattdessen `useMemo`, um das Ergebnis von `getVisibleTodos` zu cachen:
 
 <Sandpack>
 
@@ -1128,7 +1128,7 @@ export default function TodoList() {
           checked={showActive}
           onChange={e => setShowActive(e.target.checked)}
         />
-        Show only active todos
+        Nur aktive To-dos anzeigen
       </label>
       <input value={text} onChange={e => setText(e.target.value)} />
       <button onClick={handleAddClick}>
@@ -1166,9 +1166,9 @@ export function createTodo(text, completed = false) {
 }
 
 export const initialTodos = [
-  createTodo('Get apples', true),
-  createTodo('Get oranges', true),
-  createTodo('Get carrots'),
+  createTodo('Äpfel kaufen', true),
+  createTodo('Orangen kaufen', true),
+  createTodo('Karotten kaufen'),
 ];
 ```
 
@@ -1179,7 +1179,7 @@ input { margin-top: 10px; }
 
 </Sandpack>
 
-With this change, `getVisibleTodos()` will be called only if `todos` or `showActive` change. Typing into the input only changes the `text` state variable, so it does not trigger a call to `getVisibleTodos()`.
+Mit dieser Änderung wird `VisibleTodos()` nur aufgerufen, wenn sich `todos` oder `showActive` ändern. Eingaben in das Textfeld ändern nur den Wert des States `text` und löst nicht länger einen Aufruf von `getVisibleTodos()` aus.
 
 There is also another solution which does not need `useMemo`. Since the `text` state variable can't possibly affect the list of todos, you can extract the `NewTodo` form into a separate component, and move the `text` state variable inside of it:
 
