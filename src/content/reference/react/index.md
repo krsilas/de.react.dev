@@ -87,7 +87,7 @@ Das Vermeiden von überflüssiger Arbeit ist eine gängige Methode, um die Leist
 
 Verwende eine dieser Hooks, um überflüssige Berechnungen oder Re-Renderings zu vermeiden:
 
-- [`useMemo`](/reference/react/useMemo) ermöglicht dir das Ergebnis einer teuren Berechnung zwischenzuspeichern.
+- [`useMemo`](/reference/react/useMemo) ermöglicht dir das Ergebnis einer aufwendigen Berechnung zwischenzuspeichern.
 - [`useCallback`](/reference/react/useCallback) ermöglicht dir Funktionsdefinition zwischenzuspeichern, bevor sie an eine optimierte Komponente weitergegeben werden.
 
 ```js
